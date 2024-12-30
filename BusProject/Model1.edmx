@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BusesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="tbl_otobus">
+          <Key>
+            <PropertyRef Name="otobusID" />
+          </Key>
+          <Property Name="otobusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="otobusAdi" Type="nvarchar" MaxLength="30" />
+          <Property Name="resim" Type="nvarchar(max)" />
+          <Property Name="plaka" Type="char" MaxLength="11" />
+        </EntityType>
+        <EntityType Name="tbl_sefer">
+          <Key>
+            <PropertyRef Name="seferID" />
+          </Key>
+          <Property Name="seferID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="otobusID" Type="int" />
+          <Property Name="yolcuID" Type="int" />
+          <Property Name="seferKalkis" Type="nvarchar" MaxLength="17" />
+          <Property Name="seferVaris" Type="nvarchar" MaxLength="17" />
+          <Property Name="Tutar" Type="int" />
+          <Property Name="Hasilat" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_sehirler">
+          <Key>
+            <PropertyRef Name="SehirID" />
+          </Key>
+          <Property Name="SehirID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SehirAdi" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_yolcu">
+          <Key>
+            <PropertyRef Name="YolcuID" />
+          </Key>
+          <Property Name="YolcuID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="yolcuAdi" Type="nvarchar" MaxLength="30" />
+          <Property Name="yolcuSoyad" Type="nvarchar" MaxLength="20" />
+          <Property Name="otobusNo" Type="int" />
+          <Property Name="koltukNo" Type="char" MaxLength="1" />
+        </EntityType>
+        <Association Name="FK__tbl_sefer__otobu__5CD6CB2B">
+          <End Role="tbl_otobus" Type="Self.tbl_otobus" Multiplicity="0..1" />
+          <End Role="tbl_sefer" Type="Self.tbl_sefer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_otobus">
+              <PropertyRef Name="otobusID" />
+            </Principal>
+            <Dependent Role="tbl_sefer">
+              <PropertyRef Name="otobusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_sefer__yolcu__5DCAEF64">
+          <End Role="tbl_yolcu" Type="Self.tbl_yolcu" Multiplicity="0..1" />
+          <End Role="tbl_sefer" Type="Self.tbl_sefer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_yolcu">
+              <PropertyRef Name="YolcuID" />
+            </Principal>
+            <Dependent Role="tbl_sefer">
+              <PropertyRef Name="yolcuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_yolcu__otobu__4BAC3F29">
+          <End Role="tbl_otobus" Type="Self.tbl_otobus" Multiplicity="0..1" />
+          <End Role="tbl_yolcu" Type="Self.tbl_yolcu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_otobus">
+              <PropertyRef Name="otobusID" />
+            </Principal>
+            <Dependent Role="tbl_yolcu">
+              <PropertyRef Name="otobusNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BusesDBModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_otobus" EntityType="Self.tbl_otobus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_sefer" EntityType="Self.tbl_sefer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_sehirler" EntityType="Self.tbl_sehirler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_yolcu" EntityType="Self.tbl_yolcu" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_sefer__otobu__5CD6CB2B" Association="Self.FK__tbl_sefer__otobu__5CD6CB2B">
+            <End Role="tbl_otobus" EntitySet="tbl_otobus" />
+            <End Role="tbl_sefer" EntitySet="tbl_sefer" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_sefer__yolcu__5DCAEF64" Association="Self.FK__tbl_sefer__yolcu__5DCAEF64">
+            <End Role="tbl_yolcu" EntitySet="tbl_yolcu" />
+            <End Role="tbl_sefer" EntitySet="tbl_sefer" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_yolcu__otobu__4BAC3F29" Association="Self.FK__tbl_yolcu__otobu__4BAC3F29">
+            <End Role="tbl_otobus" EntitySet="tbl_otobus" />
+            <End Role="tbl_yolcu" EntitySet="tbl_yolcu" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BusesDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tbl_otobus">
+          <Key>
+            <PropertyRef Name="otobusID" />
+          </Key>
+          <Property Name="otobusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="otobusAdi" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="resim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="plaka" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="tbl_sefer" Relationship="Self.FK__tbl_sefer__otobu__5CD6CB2B" FromRole="tbl_otobus" ToRole="tbl_sefer" />
+          <NavigationProperty Name="tbl_yolcu" Relationship="Self.FK__tbl_yolcu__otobu__4BAC3F29" FromRole="tbl_otobus" ToRole="tbl_yolcu" />
+        </EntityType>
+        <EntityType Name="tbl_sefer">
+          <Key>
+            <PropertyRef Name="seferID" />
+          </Key>
+          <Property Name="seferID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="otobusID" Type="Int32" />
+          <Property Name="yolcuID" Type="Int32" />
+          <Property Name="seferKalkis" Type="String" MaxLength="17" FixedLength="false" Unicode="true" />
+          <Property Name="seferVaris" Type="String" MaxLength="17" FixedLength="false" Unicode="true" />
+          <Property Name="Tutar" Type="Int32" />
+          <Property Name="Hasilat" Type="Int32" />
+          <NavigationProperty Name="tbl_otobus" Relationship="Self.FK__tbl_sefer__otobu__5CD6CB2B" FromRole="tbl_sefer" ToRole="tbl_otobus" />
+          <NavigationProperty Name="tbl_yolcu" Relationship="Self.FK__tbl_sefer__yolcu__5DCAEF64" FromRole="tbl_sefer" ToRole="tbl_yolcu" />
+        </EntityType>
+        <EntityType Name="tbl_sehirler">
+          <Key>
+            <PropertyRef Name="SehirID" />
+          </Key>
+          <Property Name="SehirID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SehirAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_yolcu">
+          <Key>
+            <PropertyRef Name="YolcuID" />
+          </Key>
+          <Property Name="YolcuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="yolcuAdi" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="yolcuSoyad" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="otobusNo" Type="Int32" />
+          <Property Name="koltukNo" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="tbl_otobus" Relationship="Self.FK__tbl_yolcu__otobu__4BAC3F29" FromRole="tbl_yolcu" ToRole="tbl_otobus" />
+          <NavigationProperty Name="tbl_sefer" Relationship="Self.FK__tbl_sefer__yolcu__5DCAEF64" FromRole="tbl_yolcu" ToRole="tbl_sefer" />
+        </EntityType>
+        <Association Name="FK__tbl_sefer__otobu__5CD6CB2B">
+          <End Role="tbl_otobus" Type="Self.tbl_otobus" Multiplicity="0..1" />
+          <End Role="tbl_sefer" Type="Self.tbl_sefer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_otobus">
+              <PropertyRef Name="otobusID" />
+            </Principal>
+            <Dependent Role="tbl_sefer">
+              <PropertyRef Name="otobusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_yolcu__otobu__4BAC3F29">
+          <End Role="tbl_otobus" Type="Self.tbl_otobus" Multiplicity="0..1" />
+          <End Role="tbl_yolcu" Type="Self.tbl_yolcu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_otobus">
+              <PropertyRef Name="otobusID" />
+            </Principal>
+            <Dependent Role="tbl_yolcu">
+              <PropertyRef Name="otobusNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_sefer__yolcu__5DCAEF64">
+          <End Role="tbl_yolcu" Type="Self.tbl_yolcu" Multiplicity="0..1" />
+          <End Role="tbl_sefer" Type="Self.tbl_sefer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_yolcu">
+              <PropertyRef Name="YolcuID" />
+            </Principal>
+            <Dependent Role="tbl_sefer">
+              <PropertyRef Name="yolcuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BusesDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="tbl_otobus" EntityType="Self.tbl_otobus" />
+          <EntitySet Name="tbl_sefer" EntityType="Self.tbl_sefer" />
+          <EntitySet Name="tbl_sehirler" EntityType="Self.tbl_sehirler" />
+          <EntitySet Name="tbl_yolcu" EntityType="Self.tbl_yolcu" />
+          <AssociationSet Name="FK__tbl_sefer__otobu__5CD6CB2B" Association="Self.FK__tbl_sefer__otobu__5CD6CB2B">
+            <End Role="tbl_otobus" EntitySet="tbl_otobus" />
+            <End Role="tbl_sefer" EntitySet="tbl_sefer" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_yolcu__otobu__4BAC3F29" Association="Self.FK__tbl_yolcu__otobu__4BAC3F29">
+            <End Role="tbl_otobus" EntitySet="tbl_otobus" />
+            <End Role="tbl_yolcu" EntitySet="tbl_yolcu" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_sefer__yolcu__5DCAEF64" Association="Self.FK__tbl_sefer__yolcu__5DCAEF64">
+            <End Role="tbl_yolcu" EntitySet="tbl_yolcu" />
+            <End Role="tbl_sefer" EntitySet="tbl_sefer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BusesDBModelStoreContainer" CdmEntityContainer="BusesDBEntities">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BusesDBModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_otobus">
+            <EntityTypeMapping TypeName="BusesDBModel.tbl_otobus">
+              <MappingFragment StoreEntitySet="tbl_otobus">
+                <ScalarProperty Name="otobusID" ColumnName="otobusID" />
+                <ScalarProperty Name="otobusAdi" ColumnName="otobusAdi" />
+                <ScalarProperty Name="resim" ColumnName="resim" />
+                <ScalarProperty Name="plaka" ColumnName="plaka" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_sefer">
+            <EntityTypeMapping TypeName="BusesDBModel.tbl_sefer">
+              <MappingFragment StoreEntitySet="tbl_sefer">
+                <ScalarProperty Name="seferID" ColumnName="seferID" />
+                <ScalarProperty Name="otobusID" ColumnName="otobusID" />
+                <ScalarProperty Name="yolcuID" ColumnName="yolcuID" />
+                <ScalarProperty Name="seferKalkis" ColumnName="seferKalkis" />
+                <ScalarProperty Name="seferVaris" ColumnName="seferVaris" />
+                <ScalarProperty Name="Tutar" ColumnName="Tutar" />
+                <ScalarProperty Name="Hasilat" ColumnName="Hasilat" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_sehirler">
+            <EntityTypeMapping TypeName="BusesDBModel.tbl_sehirler">
+              <MappingFragment StoreEntitySet="tbl_sehirler">
+                <ScalarProperty Name="SehirID" ColumnName="SehirID" />
+                <ScalarProperty Name="SehirAdi" ColumnName="SehirAdi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_yolcu">
+            <EntityTypeMapping TypeName="BusesDBModel.tbl_yolcu">
+              <MappingFragment StoreEntitySet="tbl_yolcu">
+                <ScalarProperty Name="YolcuID" ColumnName="YolcuID" />
+                <ScalarProperty Name="yolcuAdi" ColumnName="yolcuAdi" />
+                <ScalarProperty Name="yolcuSoyad" ColumnName="yolcuSoyad" />
+                <ScalarProperty Name="otobusNo" ColumnName="otobusNo" />
+                <ScalarProperty Name="koltukNo" ColumnName="koltukNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
