@@ -380,6 +380,7 @@
             this.cmbOtobus.Name = "cmbOtobus";
             this.cmbOtobus.Size = new System.Drawing.Size(121, 21);
             this.cmbOtobus.TabIndex = 12;
+            this.cmbOtobus.SelectedIndexChanged += new System.EventHandler(this.cmbOtobus_SelectedIndexChanged);
             // 
             // label7
             // 

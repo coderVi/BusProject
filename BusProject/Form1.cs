@@ -50,11 +50,21 @@ namespace BusProject
             cmbBOtobus.ValueMember = "otobusID";
             cmbBOtobus.SelectedIndex = -1;
 
-            //Buton rengini sıfırlamak için
+            //Buton rengini sıfırla ve kontrol et
             cmbBOtobus.SelectedIndexChanged += ComboTetik;
             cmbSeferKalkis.SelectedIndexChanged += ComboTetik;
             cmbSeferVaris.SelectedIndexChanged += ComboTetik;
 
+            cmbOtobus.Items.Clear();
+            var list = db.tbl_otobus.
+                Select(s => new
+                {
+                    id = s.otobusID,
+                    plaka = s.plaka,
+                }).ToList();
+            cmbOtobus.DataSource = list;
+            cmbOtobus.DisplayMember = "plaka";
+            cmbOtobus.ValueMember = "id";
         }
         void OtobusKayit()
         {
@@ -194,13 +204,47 @@ namespace BusProject
             button8.BackColor = SystemColors.Control;
             button9.BackColor = SystemColors.Control;
         }
-        void ComboTetik(object sender, EventArgs e)
+        private void ComboTetik(object sender, EventArgs e)
         {
-            RenkSıfırla();
+            Button[] buttons = { button1, button2, button3, button4, button5, button6, button7, button8, button9 };
+            foreach (var button in buttons)
+            {
+                button.BackColor = SystemColors.Control;
+            }
+            KoltuklariKontrolEt();
         }
+        private void KoltuklariKontrolEt()
+        {
+            Button[] buttons = { button1, button2, button3, button4, button5, button6, button7, button8, button9 };
+            foreach (var button in buttons)
+            {
+                DoluKoltuk(button);
+            }
+        }
+        private void DoluKoltuk(Button btn)
+        {
+            var koltukNo = btn.Text;
+            var otobusNo = (int)cmbBOtobus.SelectedValue;
+            var seferKalkis = cmbSeferKalkis.Text;
+            var seferVaris = cmbSeferVaris.Text;
 
+            var list = db.tbl_sefer
+                .Where(x => x.tbl_yolcu.koltukNo == koltukNo && x.otobusID == otobusNo && x.seferKalkis == seferKalkis && x.seferVaris == seferVaris)
+                .ToList();
+
+            if (list.Any())
+            {
+                btn.BackColor = Color.Red;
+            }
+        }
         void BiletKesKontrol(Button btn)
         {
+            if (btn.BackColor == Color.Red)
+            {
+                MessageBox.Show("Bu koltuk zaten dolu. Bilet kesme işlemi yapılamaz.");
+                return;
+            }
+
             try
             {
                 string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
@@ -213,27 +257,27 @@ namespace BusProject
                         yolcuAdi = Ad,
                         yolcuSoyad = Soyad,
                         otobusNo = (int)cmbBOtobus.SelectedValue,
-                        koltukNo = button1.Text
+                        koltukNo = btn.Text
                     };
                     try
                     {
                         tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
                         if (kontrol != null)
                         {
+                            
                             db.SaveChanges();
-                            tbl_sefer sefer = new tbl_sefer();
-                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
-                            sefer.yolcuID = yolcu.YolcuID;
-                            string kalkis = cmbSeferKalkis.Text;
-                            string varis = cmbSeferVaris.Text;
-                            sefer.seferKalkis = kalkis;
-                            sefer.seferVaris = varis;
-                            sefer.Tutar = 100;
-                            sefer.Hasilat += sefer.Tutar;
+                            tbl_sefer sefer = new tbl_sefer
+                            {
+                                otobusID = (int)cmbBOtobus.SelectedValue,
+                                yolcuID = yolcu.YolcuID,
+                                seferKalkis = cmbSeferKalkis.Text,
+                                seferVaris = cmbSeferVaris.Text,
+                                Tutar = 100,
+                                Hasilat = 0
+                            };
                             db.tbl_sefer.Add(sefer);
                             db.SaveChanges();
                             MessageBox.Show("Kayıt Başarıyla Eklendi");
-                            //Kod tekrarı olmaması için türetilen Button öğesi her buton içinde overload edildikçe çalışacaktır.
                             btn.BackColor = Color.Red;
                             Listboxdoldur();
                         }
@@ -244,22 +288,17 @@ namespace BusProject
                     }
                     catch (Exception ex)
                     {
-
-                        MessageBox.Show(ex.Message + "hata buradan ");
+                        MessageBox.Show(ex.Message);
                     }
-
                 }
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void btnBiletKes_Click(object sender, EventArgs e)
         {
-
             gbBiletSecim.Visible = true;
             OtobusKayit();
             otobusYazdir();
@@ -309,5 +348,41 @@ namespace BusProject
         {
             BiletKesKontrol(sender as Button);
         }
+        private void cmbOtobus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbOtobus.SelectedValue != null && int.TryParse(cmbOtobus.SelectedValue.ToString(), out int secim))
+                {
+                    var hasilatList = db.tbl_sefer
+                                        .Where(x => x.otobusID == secim)
+                                        .GroupBy(x => x.otobusID)
+                                        .Select(g => new
+                                        {
+                                            otobusID = g.Key,
+                                            toplamHasilat = g.Sum(x => x.Tutar)
+                                        }).FirstOrDefault();
+
+                    if (hasilatList != null)
+                    {
+                        txtHasilat.Text = hasilatList.toplamHasilat.ToString();
+                    }
+                    else
+                    {
+                        txtHasilat.Text = "No Result Found";
+                    }
+                }
+            }
+            catch (InvalidCastException ex)
+            {
+                MessageBox.Show($"Hata: {ex.Message}");
+            }
+        }
+
+        ///<summary>
+        ///Kontrol ve Bilet Kesme Bitti
+        ///Araç Takip Kısmı Başlanacak!
+        /// </summary>
+
     }
 }
