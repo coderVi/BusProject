@@ -110,7 +110,39 @@ namespace BusProject
                 MessageBox.Show(ex.Message);
             }
         }
+        void Listboxdoldur()
+        {
+            var bilgi = db.tbl_sefer
+                                .Select(x => new
+                                {
+                                    x.seferID,
+                                    Plaka = x.tbl_otobus.plaka,
+                                    Koltuk = x.tbl_yolcu.koltukNo,
+                                    Guzergah = x.seferKalkis + " -> " + x.seferVaris,
+                                    AdSoyad = x.tbl_yolcu.yolcuAdi + " " + x.tbl_yolcu.yolcuSoyad,
+                                    x.Tutar,
 
+                                });
+            lbPlaka.DataSource = bilgi.ToList();
+            lbPlaka.DisplayMember = "Plaka";
+            lbPlaka.ValueMember = "seferID";
+
+            lbKoltuk.DataSource = bilgi.ToList();
+            lbKoltuk.DisplayMember = "Koltuk";
+            lbKoltuk.ValueMember = "seferID";
+
+            lbGuzergah.DataSource = bilgi.ToList();
+            lbGuzergah.DisplayMember = "Guzergah";
+            lbGuzergah.ValueMember = "seferID";
+
+            lbAdSoyad.DataSource = bilgi.ToList();
+            lbAdSoyad.DisplayMember = "AdSoyad";
+            lbAdSoyad.ValueMember = "seferID";
+
+            lbTutar.DataSource = bilgi.ToList();
+            lbTutar.DisplayMember = "Tutar";
+            lbTutar.ValueMember = "seferID";
+        }
         void otobusYazdir()
         {
             //Bu blok Otobüs plakalarını combobox'ta görüntüleme içindir!
@@ -148,7 +180,22 @@ namespace BusProject
                 MessageBox.Show(ex.Message);
             }
         }
-
+        void RenkSıfırla()
+        {
+            button1.BackColor = SystemColors.Control;
+            button2.BackColor = SystemColors.Control;
+            button3.BackColor = SystemColors.Control;
+            button4.BackColor = SystemColors.Control;
+            button5.BackColor = SystemColors.Control;
+            button6.BackColor = SystemColors.Control;
+            button7.BackColor = SystemColors.Control;
+            button8.BackColor = SystemColors.Control;
+            button9.BackColor = SystemColors.Control;
+        }
+        void ComboTetik(object sender, EventArgs e)
+        {
+            RenkSıfırla();
+        }
         private void btnBiletKes_Click(object sender, EventArgs e)
         {
 
@@ -156,17 +203,15 @@ namespace BusProject
             OtobusKayit();
             otobusYazdir();
         }
-
         private void cmbBOtobus_SelectedIndexChanged(object sender, EventArgs e)
         {
             ResimVeAd();
         }
-
         private void btnKontrol_Click(object sender, EventArgs e)
         {
             gbKontrol.Visible = true;
+            Listboxdoldur();
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -192,8 +237,10 @@ namespace BusProject
                             tbl_sefer sefer = new tbl_sefer();
                             sefer.otobusID = (int)cmbBOtobus.SelectedValue;
                             sefer.yolcuID = yolcu.YolcuID;
-                            sefer.seferKalkis = cmbSeferKalkis.SelectedText;
-                            sefer.seferVaris = cmbSeferVaris.SelectedText;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
                             sefer.Tutar = 100;
                             sefer.Hasilat += sefer.Tutar;
                             db.tbl_sefer.Add(sefer);
@@ -201,36 +248,15 @@ namespace BusProject
 
                             MessageBox.Show("Kayıt Başarıyla Eklendi");
                             button1.BackColor = Color.Red;
-                            var bilgi = db.tbl_sefer
-                                .Select(x => new
+                            try
+                            {
+
+                                if (button1.BackColor != Color.Red)
                                 {
-                                    x.seferID,
-                                    Plaka = x.tbl_otobus.plaka,
-                                    Koltuk = x.tbl_yolcu.koltukNo,
-                                    Guzergah = x.seferKalkis + " -> " + x.seferVaris,
-                                    AdSoyad = x.tbl_yolcu.yolcuAdi + " " + x.tbl_yolcu.yolcuSoyad,
-                                    x.Tutar,
-
-                                });
-                            lbPlaka.DataSource = bilgi.ToList();
-                            lbPlaka.DisplayMember = "Plaka";
-                            lbPlaka.ValueMember = "seferID";
-
-                            lbKoltuk.DataSource = bilgi.ToList();
-                            lbKoltuk.DisplayMember = "Koltuk";
-                            lbKoltuk.ValueMember = "seferID";
-
-                            lbGuzergah.DataSource = bilgi.ToList();
-                            lbGuzergah.DisplayMember = "Guzergah";
-                            lbGuzergah.ValueMember = "seferID";
-
-                            lbAdSoyad.DataSource = bilgi.ToList();
-                            lbAdSoyad.DisplayMember = "AdSoyad";
-                            lbAdSoyad.ValueMember = "seferID";
-
-                            lbTutar.DataSource = bilgi.ToList();
-                            lbTutar.DisplayMember = "Tutar";
-                            lbTutar.ValueMember = "seferID";
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
                         }
                         else
                         {
@@ -240,48 +266,544 @@ namespace BusProject
                     catch (Exception ex)
                     {
 
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show(ex.Message +"hata buradan ");
                     }
                     
                 }
             }
+
             catch (Exception ex) 
-            { 
-                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : string.Empty; MessageBox.Show($"Hata: {ex.Message}\nDetay: {innerMessage}"); 
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button2.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button2.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button2.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
             }
 
-
-
-
-
-            ///<summary>
-            ///Eksik Bıraktığım Noktalar
-            ///1. Kontrol Butonuna Basınca veriler listbox a getirilecek
-            ///2. Kontrol yapılacak eğer Bir otobüs aynı güzergaha gidiyorsa bağlı olduğu koltuk seçim ekranında kırmızı olacak.
-            ///3.Araç takip bölümüne giriş yapılacak.
-            ///4. kontrolde otobüsler listelenece ve hasılat kontrol edilecek.
-            ///5. ve en önemlisi Yılbaşı kutlanmıyacak
-            ///<returns>
-            ///İşe girene kadar tatil YOK!!!
-            ///</returns>
-            ///</summary>
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        void RenkSıfırla()
+        private void button3_Click(object sender, EventArgs e)
         {
-            button1.BackColor = SystemColors.Control;
-            button2.BackColor = SystemColors.Control;
-            button3.BackColor = SystemColors.Control;
-            button4.BackColor = SystemColors.Control;
-            button5.BackColor = SystemColors.Control;
-            button6.BackColor = SystemColors.Control;
-            button7.BackColor = SystemColors.Control;
-            button8.BackColor = SystemColors.Control;
-            button9.BackColor = SystemColors.Control;
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button3.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button3.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button3.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
-        void ComboTetik(object sender, EventArgs e)
+
+        private void button6_Click(object sender, EventArgs e)
         {
-            RenkSıfırla();
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button6.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button6.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button6.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button5.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button5.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button5.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button4.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button4.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button4.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button9.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button9.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button9.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button2.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button8.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button8.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string kisiAdSoyad = Interaction.InputBox("Ad Soyad", "Bilet Kes");
+                string Ad = kisiAdSoyad.Split(' ')[0].Trim();
+                string Soyad = kisiAdSoyad.Split(' ')[1].Trim();
+                if (!string.IsNullOrEmpty(kisiAdSoyad))
+                {
+                    tbl_yolcu yolcu = new tbl_yolcu
+                    {
+                        yolcuAdi = Ad,
+                        yolcuSoyad = Soyad,
+                        otobusNo = (int)cmbBOtobus.SelectedValue,
+                        koltukNo = button7.Text
+                    };
+                    try
+                    {
+                        tbl_yolcu kontrol = db.tbl_yolcu.Add(yolcu);
+                        if (kontrol != null)
+                        {
+                            db.SaveChanges();
+                            tbl_sefer sefer = new tbl_sefer();
+                            sefer.otobusID = (int)cmbBOtobus.SelectedValue;
+                            sefer.yolcuID = yolcu.YolcuID;
+                            string kalkis = cmbSeferKalkis.Text;
+                            string varis = cmbSeferVaris.Text;
+                            sefer.seferKalkis = kalkis;
+                            sefer.seferVaris = varis;
+                            sefer.Tutar = 100;
+                            sefer.Hasilat += sefer.Tutar;
+                            db.tbl_sefer.Add(sefer);
+                            db.SaveChanges();
+
+                            MessageBox.Show("Kayıt Başarıyla Eklendi");
+                            button7.BackColor = Color.Red;
+                            try
+                            {
+
+                                if (button7.BackColor != Color.Red)
+                                {
+                                    Listboxdoldur();
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bilet Kesilmedi");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message + "hata buradan ");
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
