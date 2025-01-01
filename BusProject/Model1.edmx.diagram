@@ -8,11 +8,14 @@
         <EntityTypeShape EntityType="BusesDBModel.sysdiagram" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="BusesDBModel.tbl_otobus" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="BusesDBModel.tbl_sefer" Width="1.5" PointX="5.25" PointY="4.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="BusesDBModel.tbl_sehirler" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BusesDBModel.tbl_sehirler" Width="1.5" PointX="5.25" PointY="2.125" IsExpanded="true" />
         <EntityTypeShape EntityType="BusesDBModel.tbl_yolcu" Width="1.5" PointX="3" PointY="6.375" IsExpanded="true" />
         <AssociationConnector Association="BusesDBModel.FK__tbl_sefer__otobu__5CD6CB2B" ManuallyRouted="false" />
         <AssociationConnector Association="BusesDBModel.FK__tbl_yolcu__otobu__4BAC3F29" ManuallyRouted="false" />
         <AssociationConnector Association="BusesDBModel.FK__tbl_sefer__yolcu__5DCAEF64" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="BusesDBModel.kayit" Width="1.5" PointX="1.75" PointY="10" />
+        <EntityTypeShape EntityType="BusesDBModel.GunlukArsiv" Width="1.5" PointX="3.875" PointY="10" />
+        <AssociationConnector Association="BusesDBModel.FK__GunlukArs__Kayit__73BA3083" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

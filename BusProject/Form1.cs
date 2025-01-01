@@ -133,7 +133,7 @@ namespace BusProject
                                     x.Tutar,
 
                                 });
-            //Reverse Methodu linq quetlerini dönüştüremediği için AsEnumerable kullanılmıştır
+            //Reverse Methodu linq querylerini dönüştüremediği için AsEnumerable kullanılmıştır
             var tersBilgi = bilgi.AsEnumerable().Reverse().ToList();
             lbPlaka.DataSource = tersBilgi;
             lbPlaka.DisplayMember = "Plaka";
@@ -191,18 +191,6 @@ namespace BusProject
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-        void RenkSıfırla()
-        {
-            button1.BackColor = SystemColors.Control;
-            button2.BackColor = SystemColors.Control;
-            button3.BackColor = SystemColors.Control;
-            button4.BackColor = SystemColors.Control;
-            button5.BackColor = SystemColors.Control;
-            button6.BackColor = SystemColors.Control;
-            button7.BackColor = SystemColors.Control;
-            button8.BackColor = SystemColors.Control;
-            button9.BackColor = SystemColors.Control;
         }
         private void ComboTetik(object sender, EventArgs e)
         {
@@ -273,7 +261,6 @@ namespace BusProject
                                 seferKalkis = cmbSeferKalkis.Text,
                                 seferVaris = cmbSeferVaris.Text,
                                 Tutar = 100,
-                                Hasilat = 0
                             };
                             db.tbl_sefer.Add(sefer);
                             db.SaveChanges();
@@ -378,11 +365,190 @@ namespace BusProject
                 MessageBox.Show($"Hata: {ex.Message}");
             }
         }
+        private void btnAracTakip_Click(object sender, EventArgs e)
+        {
+            gbAracTakip.Visible = true;
 
-        ///<summary>
-        ///Kontrol ve Bilet Kesme Bitti
-        ///Araç Takip Kısmı Başlanacak!
-        /// </summary>
+            try
+            {
+                var list = db.tbl_otobus.Select(x => new
+                {
+                    x.otobusID,
+                    x.plaka,
+                }).ToList();
+                cmbAotobus.DataSource = list;
+                cmbAotobus.DisplayMember = "Plaka";
+                cmbAotobus.ValueMember = "otobusID";
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "Hata otobüs yazdır fonksiyon");
+            }
+        }
+        private void cmbAotobus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbAotobus.SelectedValue != null)
+                {
+                    if (int.TryParse(cmbAotobus.SelectedValue.ToString(), out int selectedOtobusID))
+                    {
+                        var seferListesi = db.tbl_sefer
+                            .Where(x => x.otobusID == selectedOtobusID)
+                            .OrderByDescending(x => x.seferID)
+                            .ToList();
+
+                        if (seferListesi.Any())
+                        {
+                            var sonSefer = seferListesi.First();
+
+                            var kisiSayisi = db.tbl_sefer
+                                .Where(y => y.otobusID == selectedOtobusID && y.seferKalkis == sonSefer.seferKalkis && y.seferVaris == sonSefer.seferVaris)
+                                .Count();
+
+                            txtKisiSayisi.Text = kisiSayisi.ToString();
+                            txtSefer.Text = sonSefer.seferKalkis + " -> " + sonSefer.seferVaris;
+                        }
+                        else
+                        {
+                            txtSefer.Text = "Sefer bulunamadı.";
+                            txtKisiSayisi.Text = "0";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sefer bilgisi getirilirken bir hata oluştu: " + ex.Message);
+            }
+        }
+
+        private void btnHareket_Click(object sender, EventArgs e)
+        {
+            if (cmbAotobus.SelectedValue != null && int.TryParse(cmbAotobus.SelectedValue.ToString(), out int secim))
+            {
+                int yolcuBasinaHasilat = 100;
+                if (int.TryParse(txtKisiSayisi.Text, out int kisiSayisi) && kisiSayisi > 0)
+                {
+                    var hasilatList = (from sefer in db.tbl_sefer
+                                       join otobus in db.tbl_otobus on sefer.otobusID equals otobus.otobusID
+                                       where sefer.otobusID == secim
+                                       group sefer by new { otobus.plaka } into g
+                                       select new
+                                       {
+                                           plaka = g.Key.plaka,
+                                           tarih = DateTime.Now,
+                                           toplamHasilat = kisiSayisi * yolcuBasinaHasilat
+                                       }).ToList();
+
+                    if (hasilatList != null && hasilatList.Any())
+                    {
+                        foreach (var item in hasilatList)
+                        {
+                            var yeniKayit = new kayit
+                            {
+                                plaka = item.plaka,
+                                tarih = item.tarih,
+                                hasilat = item.toplamHasilat
+                            };
+                            db.kayits.Add(yeniKayit);
+                        }
+                        db.SaveChanges();
+
+                        DisplayKayitData();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Geçerli bir kişi sayısı giriniz.");
+                }
+            }
+        }
+
+
+        private void DisplayKayitData()
+        {
+            var kayitList = db.kayits.Select(k => new
+            {
+                k.ID,
+                k.plaka,
+                k.tarih,
+                k.hasilat
+            }).ToList();
+
+            var tersList = kayitList.AsEnumerable().Reverse().ToList();
+
+            lbAPlaka.DataSource = tersList;
+            lbAPlaka.DisplayMember = "plaka";
+            lbAPlaka.ValueMember = "ID";
+
+            lbAHasilat.DataSource = tersList;
+            lbAHasilat.DisplayMember = "hasilat";
+            lbAHasilat.ValueMember = "ID";
+
+            lbTarih.DataSource = tersList;
+            lbTarih.DisplayMember = "tarih";
+            lbTarih.ValueMember = "ID";
+        }
+
+        private void btnAracDurum_Click(object sender, EventArgs e)
+        {
+            if (lbAPlaka.SelectedItem != null && lbTarih.SelectedItem != null && lbAHasilat.SelectedItem != null)
+            {
+                var selectedPlaka = ((dynamic)lbAPlaka.SelectedItem).plaka.ToString();
+                var selectedTarih = ((dynamic)lbTarih.SelectedItem).tarih.ToString();
+                var selectedHasilat = ((dynamic)lbAHasilat.SelectedItem).hasilat.ToString();
+
+                GunlukArsiv ga = new GunlukArsiv();
+                ga.plaka = selectedPlaka;
+
+                if (DateTime.TryParse(selectedTarih, out DateTime tarih))
+                {
+                    ga.tarih = tarih;
+                }
+                else
+                {
+                    MessageBox.Show("Geçerli bir tarih değeri seçiniz.");
+                    return;
+                }
+
+                if (decimal.TryParse(selectedHasilat, out decimal hasilat))
+                {
+                    ga.hasilat = hasilat;
+
+                    db.GunlukArsivs.Add(ga);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Veriler Kaydedildi!");
+                }
+                else
+                {
+                    MessageBox.Show("Geçerli bir hasılat değeri seçiniz.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Lütfen tüm gerekli alanları seçiniz.");
+            }
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            var List = db.GunlukArsivs.Select(x => new
+            {
+                x.ID,
+                arşiv = x.plaka + " " + x.tarih + " " + x.hasilat
+            }).ToList();
+
+            var tersList = List.AsEnumerable().Reverse().ToList();
+
+            lbGunlukKayit.DataSource = tersList;
+            lbGunlukKayit.DisplayMember = "arşiv";
+            lbGunlukKayit.ValueMember = "ID";
+        }
+
+
 
     }
 }

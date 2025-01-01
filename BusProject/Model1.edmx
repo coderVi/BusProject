@@ -5,6 +5,25 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BusesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GunlukArsiv">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KayitId" Type="int" />
+          <Property Name="plaka" Type="nvarchar" MaxLength="50" />
+          <Property Name="tarih" Type="datetime" />
+          <Property Name="hasilat" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="kayit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="plaka" Type="nvarchar" MaxLength="50" />
+          <Property Name="tarih" Type="datetime" />
+          <Property Name="hasilat" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -53,6 +72,18 @@
           <Property Name="otobusNo" Type="int" />
           <Property Name="koltukNo" Type="char" MaxLength="1" />
         </EntityType>
+        <Association Name="FK__GunlukArs__Kayit__73BA3083">
+          <End Role="kayit" Type="Self.kayit" Multiplicity="0..1" />
+          <End Role="GunlukArsiv" Type="Self.GunlukArsiv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kayit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GunlukArsiv">
+              <PropertyRef Name="KayitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__tbl_sefer__otobu__5CD6CB2B">
           <End Role="tbl_otobus" Type="Self.tbl_otobus" Multiplicity="0..1" />
           <End Role="tbl_sefer" Type="Self.tbl_sefer" Multiplicity="*" />
@@ -90,11 +121,17 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="BusesDBModelStoreContainer">
+          <EntitySet Name="GunlukArsiv" EntityType="Self.GunlukArsiv" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="kayit" EntityType="Self.kayit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_otobus" EntityType="Self.tbl_otobus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_sefer" EntityType="Self.tbl_sefer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_sehirler" EntityType="Self.tbl_sehirler" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_yolcu" EntityType="Self.tbl_yolcu" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__GunlukArs__Kayit__73BA3083" Association="Self.FK__GunlukArs__Kayit__73BA3083">
+            <End Role="kayit" EntitySet="kayit" />
+            <End Role="GunlukArsiv" EntitySet="GunlukArsiv" />
+          </AssociationSet>
           <AssociationSet Name="FK__tbl_sefer__otobu__5CD6CB2B" Association="Self.FK__tbl_sefer__otobu__5CD6CB2B">
             <End Role="tbl_otobus" EntitySet="tbl_otobus" />
             <End Role="tbl_sefer" EntitySet="tbl_sefer" />
@@ -143,7 +180,6 @@
           <Property Name="seferKalkis" Type="String" MaxLength="17" FixedLength="false" Unicode="true" />
           <Property Name="seferVaris" Type="String" MaxLength="17" FixedLength="false" Unicode="true" />
           <Property Name="Tutar" Type="Int32" />
-          <Property Name="Hasilat" Type="Int32" />
           <NavigationProperty Name="tbl_otobus" Relationship="Self.FK__tbl_sefer__otobu__5CD6CB2B" FromRole="tbl_sefer" ToRole="tbl_otobus" />
           <NavigationProperty Name="tbl_yolcu" Relationship="Self.FK__tbl_sefer__yolcu__5DCAEF64" FromRole="tbl_sefer" ToRole="tbl_yolcu" />
         </EntityType>
@@ -220,7 +256,46 @@
             <End Role="tbl_yolcu" EntitySet="tbl_yolcu" />
             <End Role="tbl_sefer" EntitySet="tbl_sefer" />
           </AssociationSet>
+          <EntitySet Name="kayits" EntityType="BusesDBModel.kayit" />
+          <EntitySet Name="GunlukArsivs" EntityType="BusesDBModel.GunlukArsiv" />
+          <AssociationSet Name="FK__GunlukArs__Kayit__73BA3083" Association="BusesDBModel.FK__GunlukArs__Kayit__73BA3083">
+            <End Role="kayit" EntitySet="kayits" />
+            <End Role="GunlukArsiv" EntitySet="GunlukArsivs" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="kayit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="plaka" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="tarih" Type="DateTime" Precision="3" />
+          <Property Name="hasilat" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="GunlukArsivs" Relationship="BusesDBModel.FK__GunlukArs__Kayit__73BA3083" FromRole="kayit" ToRole="GunlukArsiv" />
+        </EntityType>
+        <EntityType Name="GunlukArsiv">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KayitId" Type="Int32" />
+          <Property Name="plaka" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="tarih" Type="DateTime" Precision="3" />
+          <Property Name="hasilat" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="kayit" Relationship="BusesDBModel.FK__GunlukArs__Kayit__73BA3083" FromRole="GunlukArsiv" ToRole="kayit" />
+        </EntityType>
+        <Association Name="FK__GunlukArs__Kayit__73BA3083">
+          <End Type="BusesDBModel.kayit" Role="kayit" Multiplicity="0..1" />
+          <End Type="BusesDBModel.GunlukArsiv" Role="GunlukArsiv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kayit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GunlukArsiv">
+              <PropertyRef Name="KayitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -257,7 +332,6 @@
                 <ScalarProperty Name="seferKalkis" ColumnName="seferKalkis" />
                 <ScalarProperty Name="seferVaris" ColumnName="seferVaris" />
                 <ScalarProperty Name="Tutar" ColumnName="Tutar" />
-                <ScalarProperty Name="Hasilat" ColumnName="Hasilat" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -277,6 +351,27 @@
                 <ScalarProperty Name="yolcuSoyad" ColumnName="yolcuSoyad" />
                 <ScalarProperty Name="otobusNo" ColumnName="otobusNo" />
                 <ScalarProperty Name="koltukNo" ColumnName="koltukNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="kayits">
+            <EntityTypeMapping TypeName="BusesDBModel.kayit">
+              <MappingFragment StoreEntitySet="kayit">
+                <ScalarProperty Name="hasilat" ColumnName="hasilat" />
+                <ScalarProperty Name="tarih" ColumnName="tarih" />
+                <ScalarProperty Name="plaka" ColumnName="plaka" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GunlukArsivs">
+            <EntityTypeMapping TypeName="BusesDBModel.GunlukArsiv">
+              <MappingFragment StoreEntitySet="GunlukArsiv">
+                <ScalarProperty Name="hasilat" ColumnName="hasilat" />
+                <ScalarProperty Name="tarih" ColumnName="tarih" />
+                <ScalarProperty Name="plaka" ColumnName="plaka" />
+                <ScalarProperty Name="KayitId" ColumnName="KayitId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

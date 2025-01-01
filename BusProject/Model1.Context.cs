@@ -30,5 +30,7 @@ namespace BusProject
         public virtual DbSet<tbl_sefer> tbl_sefer { get; set; }
         public virtual DbSet<tbl_sehirler> tbl_sehirler { get; set; }
         public virtual DbSet<tbl_yolcu> tbl_yolcu { get; set; }
+        public virtual DbSet<kayit> kayits { get; set; }
+        public virtual DbSet<GunlukArsiv> GunlukArsivs { get; set; }
     }
 }

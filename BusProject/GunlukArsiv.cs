@@ -12,16 +12,14 @@ namespace BusProject
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_sefer
+    public partial class GunlukArsiv
     {
-        public int seferID { get; set; }
-        public Nullable<int> otobusID { get; set; }
-        public Nullable<int> yolcuID { get; set; }
-        public string seferKalkis { get; set; }
-        public string seferVaris { get; set; }
-        public Nullable<int> Tutar { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> KayitId { get; set; }
+        public string plaka { get; set; }
+        public Nullable<System.DateTime> tarih { get; set; }
+        public Nullable<decimal> hasilat { get; set; }
     
-        public virtual tbl_otobus tbl_otobus { get; set; }
-        public virtual tbl_yolcu tbl_yolcu { get; set; }
+        public virtual kayit kayit { get; set; }
     }
 }

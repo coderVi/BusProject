@@ -114,6 +114,7 @@
             this.btnAracTakip.TabIndex = 0;
             this.btnAracTakip.Text = "Araç Takip";
             this.btnAracTakip.UseVisualStyleBackColor = true;
+            this.btnAracTakip.Click += new System.EventHandler(this.btnAracTakip_Click);
             // 
             // btnKontrol
             // 
@@ -614,6 +615,7 @@
             this.button12.TabIndex = 4;
             this.button12.Text = "Günlük Arşiv";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // btnAracDurum
             // 
@@ -623,6 +625,7 @@
             this.btnAracDurum.TabIndex = 3;
             this.btnAracDurum.Text = "Araç Durum Kaydet";
             this.btnAracDurum.UseVisualStyleBackColor = true;
+            this.btnAracDurum.Click += new System.EventHandler(this.btnAracDurum_Click);
             // 
             // btnHareket
             // 
@@ -632,6 +635,7 @@
             this.btnHareket.TabIndex = 2;
             this.btnHareket.Text = "Araç Hareketlendir";
             this.btnHareket.UseVisualStyleBackColor = true;
+            this.btnHareket.Click += new System.EventHandler(this.btnHareket_Click);
             // 
             // txtSefer
             // 
@@ -655,6 +659,7 @@
             this.cmbAotobus.Name = "cmbAotobus";
             this.cmbAotobus.Size = new System.Drawing.Size(168, 21);
             this.cmbAotobus.TabIndex = 0;
+            this.cmbAotobus.SelectedIndexChanged += new System.EventHandler(this.cmbAotobus_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -665,6 +670,7 @@
             this.Controls.Add(this.gbKontrol);
             this.Controls.Add(this.gbBiletSecim);
             this.Controls.Add(this.pbGiris);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Coder Vi Turizm";
             this.Load += new System.EventHandler(this.Form1_Load);
