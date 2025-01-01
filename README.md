@@ -1,3 +1,129 @@
+# English
+
+# Bus Project Certification
+
+---
+
+## Bus Project
+
+This project is a system that automates bus operations, manages seat reservations and performs income reporting using C# Windows Forms Application. 
+
+---
+
+## Contents
+1. [About the Project](#about-project)
+2. [Features](#features)
+3. [Installation and Installation](#installation-and-installation)
+4. [Code Details](#code-details)
+   - [Main Functions](#main-functions)
+5. [Database Design](#database-design)
+6. [Usage](#usage)
+7. [Contribution](#contribution)
+8. [Licence](#license)
+
+---
+
+## About the Project
+
+**Bus Project** is a bus status monitoring and revenue calculation system that automates bus ticketing processes. It connects to MSSQL database using Entity Framework and stores and processes data about buses, trips and passengers.
+
+---
+
+## Features
+
+- **Bus Registration**  
+  It registers buses with unique license plates and images.  
+- **Seat Reservation**  
+  Manage seat reservations for specific buses and routes.  
+- **Income Tracking**  
+  Calculates and displays revenue for a specific bus or all trips.  
+- **Expedition Tracking**  
+  Displays current and past trip details for specific buses.  
+- **Archiving**  
+  Stores and manages daily voyage records.
+---
+
+## Installation and Installation
+
+### Prerequisites:
+1. **Development Environment**:  
+   - Visual Studio 2022 or higher  
+   - .NET Framework 4.8  
+2. **Database**:  
+   - Microsoft SQL Server
+
+### Steps:
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/coderVi/BusProject.git
+   ```
+2. Open the project in Visual Studio.
+3. Update the connection string in the `App.config` file.
+4. Compile and run the project.
+5. Run the Script File inside on Ms SQL server.
+
+---
+
+## Code Details
+
+### Main Functions
+
+#### `Form1_Load`
+- Initializes form controls.  
+- Populates data from `tbl_cities` and `tbl_bus` tables.
+
+#### `BusRegistration`
+- Adds bus records, avoids duplication by license plate.
+
+#### `Fill Listbox`
+- Displays expedition details in list boxes.
+
+#### `CheckSeats`
+- Checks occupied seats for specific buses and trips.
+
+---
+
+## Database Design
+
+- **tbl_otobus**: The table where bus information is stored.
+- **tbl_sefer**: Contains information such as trip information, bus number, departure and destination points.
+- **tbl_passenger**: Contains passenger information and reservations.
+- **tbl_sefer_rezervasyon**: The table where passengers' seat reservations are made.
+
+---
+
+## Database Design
+
+- **tbl_otobus**: The table where bus information is stored.
+- **tbl_sefer**: Contains information such as trip information, bus number, departure and destination points.
+- **tbl_passenger**: Contains passenger information and reservations.
+- **tbl_sefer_rezervasyon**: The table where passengers' seat reservations are made.
+
+---
+
+## Usage
+
+- **Bus Registration**: You can register by entering the bus information.
+- **Seat Reservation**: Seat reservations can be made for the specified bus and route.
+- **Revenue Tracking**: Income calculations are made and displayed on a bus basis and in general.
+- **Trip Tracking**: Past and current bus trips are displayed.
+- **Archiving**: Daily voyage records are stored and can be checked.
+
+---
+
+## Contributing
+
+If you would like to contribute to this project, you can send a pull request or contribute by reporting an issue.
+
+---
+
+## Licence
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+### Thanks
+
+# Türkçe
 
 # Otobüs Projesi Belgelendirme
 
@@ -111,3 +237,6 @@ Bu projeye katkıda bulunmak isterseniz, pull request gönderebilir veya issue b
 ## Lisans
 
 Bu proje, [MIT Lisansı](https://opensource.org/licenses/MIT) altında lisanslanmıştır.
+
+### Teşekkürler
+
